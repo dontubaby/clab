@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package game_logic; // Добавлен пакет
+
+option go_package = "cyber/pkg/pb";
+
+import "google/protobuf/empty.proto"; // Импорт для google.protobuf.Empty
+import "google/protobuf/timestamp.proto"; // Импорт для google.protobuf.Timestamp
+import "google/protobuf/duration.proto"; // Импорт для google.protobuf.Duration
+
+service GameLogicService {
+    rpc GetAction(ActionRequest) returns (ActionResponse);
+    rpc AddAction(LogicRequest) returns (google.protobuf.Empty); // Исправлен возвращаемый тип
+}
+
+message ActionRequest {
+    int64 id = 1; // Исправлено: добавлена точка с запятой
+}
+
+message ActionResponse {
+    int64 id = 1;
+    int64 user_id = 2;
+    int64 area_id = 3;
+    int64 object_source_id = 4;
+    int64 object_dest_id = 5;
+    string action_type = 6;
+    string characteristics = 7;
+    google.protobuf.Timestamp start_time = 8;
+    google.protobuf.Duration duration = 9;
+    string status = 10;
+}
+
+message LogicRequest {
+    int64 user_id = 1; // Исправлено: поле должно начинаться с 1
+    int64 area_id = 2;
+    int64 object_source_id = 3;
+    int64 object_dest_id = 4;
+    string action_type = 5;
+    string characteristics = 6;
+    google.protobuf.Timestamp start_time = 7;
+    google.protobuf.Duration duration = 8;
+    string status = 9;
+}

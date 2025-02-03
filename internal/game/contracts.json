@@ -1,0 +1,453 @@
+/*
+    Этот документ описывает контракты взаимодействия в рамках игровых процессов
+между frontend-ом и backend-ом
+    Примечание: все значения здесь ТЕСТОВЫЕ формат сообщений - JSON, проткол обмена даннымы - webscoket, за  исключением
+    инициализирующего контракта
+*/
+
+//************ MoveAction (Перемещение) ************
+//Frontend
+{
+  "type": "move",
+  "data": {
+    "area_id":1, //id арены на которой начато движение
+    "unit_id": 123, // Идентификатор юнита
+    "from": {"x": 10, "y": 20}, // Начальная точка
+    "to": {"x": 30, "y": 40}, // Конечная точка
+  }
+}
+
+//Новый контракт от фронта
+{	                     
+	"UserId":1,                   
+	"AreaId":1,                 
+	"ObjectSourceId":23,	        
+	"ActionType":"move",         
+	"Characteristics":{
+    "from": {"x": 10, "y": 20}, // Начальная точка
+    "to": {"x": 30, "y": 40}
+  },
+	"StartTime":   "Wed, 22 Jan 2025 04:39:28 GMT"
+}
+            
+
+
+
+//Backend
+{
+  "type": "move",
+  "data": {
+    "unit_id": 123,
+    "status": "success", // или "failed"
+    "message": "Unit can start moving", // Опциональное сообщение
+    "action_id":147
+  }
+}
+
+//Frontend - примеры сообщений о состоянии процесса(действия)
+{
+  "type": "move",
+  "action_id":147,
+  "message":"successfuly complete"
+}
+
+{
+  "type": "move",
+  "action_id":147,
+  "message":"processing"
+}
+
+//************ HarvestAction (Сбор ресурсов) ************
+//Frontend
+{
+    "type": "harvest",
+    "data": {
+      "unit_id": 123, // Идентификатор юнита
+      "neutral_id": 456 // Идентификатор нейтрального объекта      
+    }
+  }
+  
+//Backend
+{
+    "type": "harvest",
+    "data": {
+      "unit_id": 123,
+      "neutral_id": 456,
+      "status": "success", // или "failed"
+      "message": "Resource collection can be started",
+      "action_id":234
+    }
+}
+
+ //Frontend - примеры сообщений о состоянии процесса(действия)
+{
+  "type": "harvest",
+  "action_id":234,
+  "message":"successfuly complete"
+}
+
+{
+  "type": "harvest",
+  "action_id":234,
+  "message":"processing"
+}
+
+{
+  "type": "harvest",
+  "action_id":234,
+  "message":"Threshold level 1 reached"
+}
+
+{
+  "type": "harvest",
+  "action_id":234,
+  "message":"Threshold level 2 reached"
+}
+
+//Backend
+{
+  "type": "harvest",
+  "data": {
+    "message": "Resource collection reduced",
+    "action_id":234
+  }
+}
+
+
+//************ BuildAction (Строительство) ************
+//Frontend
+{
+    "type": "build",
+    "data": {
+      "builder_id": 123, // Идентификатор строителя
+      "object_type": "house", // Тип объекта
+      "place": {"x": 15, "y": 25}, // Координаты строительства
+      "construction_time": 120 // Скорость строительства в секундах
+    }
+  }
+
+  //Backend
+  {
+    "type": "build",
+    "data": {
+      "builder_id": 123,
+      "status": "success", // или "failed"
+      "message": "Construction can begin",
+      "action_id":231452
+    }
+  }
+
+//Frontend
+  {
+    "type": "build",
+    "action_id":147,
+    "message":"successfuly complete",
+    "action_id":231452
+  }
+  
+  {
+    "type": "build",
+    "action_id":147,
+    "message":"processing",
+    "action_id":231452
+  }
+
+//************ AttackAction (Атака) ************
+//Frontend
+{
+    "type": "attack",
+    "data": {
+      "attacker_id": 123, // Идентификатор атакующего
+      "defender_id": 456, // Идентификатор защищающегося
+      "damage": 10.5 // Урон
+    }
+  }
+
+  //Backend
+  {
+    "type": "attack",
+    "data": {
+      "attacker_id": 123,
+      "defender_id": 456,
+      "status": "success", // или "failed"
+      "message": "The attack may be launched",
+      "action_id":3
+    }
+  }
+
+//Frontend
+  {
+    "type": "atack",
+    "action_id":147,
+    "status":"successfuly complete",
+    "message":"unit 456 killed",
+    "action_id":3
+  }
+  {
+    "type": "atack",
+    "action_id":147,
+    "status":"processing",
+    "action_id":3
+  }
+
+  //************ Запрос состояния мира ************
+//Frontend
+{
+    "type": "get_world_state",
+    "data": {
+      "user_id": 123 // Идентификатор пользователя
+    }
+}
+
+ //Backend
+{
+    "type": "world_state",
+    "data": {
+      "session_id": 1,
+      "user_id": 123,
+      "area_id": 456,
+      "actions": [
+        {
+          "id": 789,
+          "type": "move",
+          "status": "in_progress"
+        }
+      ],
+      "timestamp": "2023-10-01T12:00:00Z"
+    }
+ }
+
+    //************ Запрос данных пользователя ************
+//Frontend
+{
+    "type": "get_user_data",
+    "data": {
+      "user_id": 123
+    }
+}
+
+//Backend
+{
+    "type": "user_data",
+    "data": {
+      "id": 123,
+      "login": "user123",
+      "resources": [
+        {"name": "gold", "value": 100},
+        {"name": "wood", "value": 50}
+      ],
+      "subscription": true,
+      "league_id": 14,
+      "balance": 1000.0,
+      "level": 5
+    }
+}
+
+      //************ ЗАПРОС ДАННЫХ АРЕНЫ ************
+//Frontend
+{
+    "type": "get_area_data",
+    "data": {
+      "area_id": 456
+    }
+}
+
+//Backend
+{
+    "type": "area_data",
+    "data": {
+      "id": 456,
+      "width": 100,
+      "height": 100,
+      "objects": [
+        {"id": 1, "type": "neutral", "coordinates": {"x": 10, "y": 20}},
+        {"id": 2, "type": "building", "coordinates": {"x": 30, "y": 40}}
+      ]
+    }
+  }
+
+
+      //************ Контракты для ОШИБОК ************
+//Backend
+      {
+        "type": "error",
+        "data": {
+          "code": 404, // Код ошибки
+          "message": "Объект не найден" // Описание ошибки
+        }
+      }
+
+
+//Инициализирующий контракт
+//Логика работы - от фронта по REST(endpoint - state) приоходит запрос с праметром user_id
+//бэкенд по id юзера производит выборку арены из базы данных. Арена в свою очеред содержит
+//свои параметры (размер ) и массивы объектов(neutrals,buildings,heroes,unit) расположенных на ней.
+
+//В дальнейшем обновления состояние  происходит по получению информации от фронта о наступлении
+//события. 
+
+//Frontend
+{
+  "data": {
+    "user_id": 456
+  }
+}
+
+//Backend
+{
+  "type": "world_state",
+  "data": {
+    "area_id": 4024, 
+    "neutrals": [
+        {
+        "id": 1, 
+        "name": "gold mine",
+        "product":"gold",
+        "productivity_coefficient":2,
+        "capacity":15000.0,
+        "treshold_level1":7500.0,     
+        "treshold_level2":2500.0, 
+        "coordinates": {"x": 10, "y": 20}
+      },
+      {"id": 2, "name": "rice field",
+         "product":"rice",
+         "productivity_coefficient":4,
+         "capacity":1500.0,
+         "treshold_level1":700.0,     
+         "treshold_level2":250.0, 
+        "coordinates": {"x": 20, "y": 50}
+      }     
+      ],
+    "buildings": [
+        {
+        "id": 1,
+        "name": "house",
+        "product":"population",
+        "characteristics":{"hp": 2500, "armor":15, "productivity_coefficient": 4,"coordinates": {"x": 30, "y": 40}},
+        "level":2,
+        "upgrade_price":{"wood":450,"stone":150}
+        },
+        {
+          "id": 2,
+          "name": "farm",
+          "product":"food",
+          "characteristics":{"hp": 3000, "armor":18, "productivity_coefficient": 4,"coordinates": {"x": 10, "y": 50}},
+          "level":5,
+          "upgrade_price":{"wood":950,"stone":250}
+          }
+      ],
+      "heroes": [
+        {
+          "id": 1,
+         "name": "Thánh Gióng",
+         "characteristics":
+         {
+          "hp": 3000,
+          "hp_now": 2000, 
+          "armor":30, 
+          "speed": 10,
+          "vision":3,
+          "range":false,
+          "atack_range":0,
+          "damage":10,
+          "coordinates": {"x": 10, "y": 50}
+        },   
+        "experience": 1500.0,
+         "experience_to_up":3000.0,
+         "level":1,
+         "abilities":[
+          {
+          "id": 1,
+          "name": "fire ball",
+          "characteristics":
+          {"is_passive": false,"radius":2.0,"cooldown":150, "damage":400,"projectil_speed":5.0},
+          "level":1,
+          "image_id":1 //здесь тестово - ИД изображения например в S3
+          },
+           {
+           "id": 2,"name": "happy aura",
+           "characteristics":
+           {"is_passive": true,"radius":8.0,"cooldown":0,"damage":0,"projectil_speed":0},
+           "level":1,
+           "image_id":2 //здесь тестово - ИД изображения например в S3
+           }
+         ]
+        },      
+        {
+        "id": 2,
+        "name": "Sơn Tinh",
+        "characteristics":{
+         "hp": 3500,
+         "hp_now": 3500, 
+         "armor":35, 
+         "speed": 8,
+         "vision":4,
+         "range":true,
+         "atack_range":2,
+         "damage":8,
+         "coordinates": {"x": 21, "y": 44}
+        },    
+        "experience": 3000.0,
+         "experience_to_up":6000.0,
+         "level":2,
+         "abilities":[
+          {
+          "id": 3,
+          "name": "frost bolt",
+          "characteristics":
+          {"is_passive": false,"radius":3.0,"cooldown":50, "damage":200,"projectil_speed":4.0},
+          "level":1,
+          "image_id":1 //здесь тестово - ИД изображения например в S3
+          },
+           {
+           "id": 4,"name": "damage aura",
+           "characteristics":
+           {"is_passive": true,"radius":8.0,"cooldown":0,"damage":0,"projectil_speed":0},
+           "level":1,
+           "image_id":2 //здесь тестово - ИД изображения например в S3
+           }
+         ]    
+       },                  
+      ],
+      "units": [
+        {
+        "id": 1,
+        "name": "CyMan",
+        "characteristics":{
+         "hp": 1500,
+         "hp_now": 1500, 
+         "armor":5, 
+         "speed": 12,
+         "vision":5,
+         "range":false,
+         "atack_range":0,
+         "damage":0,
+         "prod_cof":2, //коэфициент продуктивности - сколько единиц продукта в единицу времени
+         "coordinates": {"x": 22, "y": 4}
+        },
+        "experience": 500.0,
+        "experience_to_up":1000.0, 
+        "level":1
+        },
+        {
+          "id": 2,
+          "name": "CoRut",
+          "characteristics":{
+           "hp": 2000,
+           "hp_now": 1900, 
+           "armor":20, 
+           "speed": 7,
+           "vision":5,
+           "range":false,
+           "atack_range":0,
+           "damage":0,
+           "prod_cof":4, //коэфициент продуктивности - сколько единиц продукта в единицу времени
+           "coordinates": {"x": 221, "y": 44}
+          },
+          "experience": 1000.0,
+          "experience_to_up":2000.0, 
+          "level":2
+          },        
+      ]
+  }
+}

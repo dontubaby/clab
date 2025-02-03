@@ -1,0 +1,26 @@
+.
+├── assets/
+│   ├── images/
+│   │   └── unit.png
+│   ├── maps/
+│   │   └── level1.tmx
+│   └── sounds/
+│       └── background_music.mp3
+├── game/
+│   ├── entities/
+│   │   ├── entity.go
+│   │   ├── player.go
+│   │   └── enemy.go
+│   ├── map/
+│   │   ├── tilemap.go
+│   │   └── load_tiled_map.go
+│   ├── input/
+│   │   └── input_handler.go
+│   ├── logic/
+│   │   ├── game_logic.go
+│   │   └── ai.go
+│   └── render/
+│       └── renderer.go
+├── main.go
+├── go.mod
+└── go.sum
